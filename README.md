@@ -1,1 +1,769 @@
-# Agendamento-barbearia
+[index.html](https://github.com/user-attachments/files/33250977/index.html)
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BarberShop Premium - Agendamento Online</title>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter & Playfair -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,600&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            400: '#F39C12',
+                            500: '#D4AF37',
+                            600: '#AA820A'
+                        },
+                        dark: {
+                            900: '#0F0F10',
+                            800: '#18181B',
+                            700: '#27272A',
+                            600: '#3F3F46'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Custom Scrollbar & Utility Styles -->
+    <style>
+        body {
+            background-color: #0F0F10;
+            color: #F4F4F5;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #F39C12 0%, #D4AF37 50%, #FFF099 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #18181B;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3F3F46;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #D4AF37;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-gold-500 selection:text-black">
+
+    <header class="sticky top-0 z-40 bg-dark-900/90 backdrop-blur-md border-b border-dark-700/60 transition-all">
+        <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-gold-600 to-gold-400 p-[2px] flex items-center justify-center">
+                    <div class="w-full h-full bg-dark-900 rounded-full flex items-center justify-center">
+                        <i class="fa-solid fa-scissors text-gold-500 text-lg"></i>
+                    </div>
+                </div>
+                <div>
+                    <h1 class="font-serif font-bold text-lg md:text-xl text-white tracking-wide flex items-center gap-2">
+                        BARBER<span class="gold-gradient-text">SHOP</span>
+                    </h1>
+                    <p class="text-xs text-zinc-400">Estilo & Elegância</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+                <button onclick="switchTab('booking')" id="nav-booking" class="px-3 py-1.5 rounded-lg text-xs md:text-sm font-medium bg-gold-500 text-dark-900 transition flex items-center gap-1.5 shadow-lg shadow-gold-500/10">
+                    <i class="fa-solid fa-calendar-plus"></i>
+                    <span>Agendar</span>
+                </button>
+                <button onclick="openAdminModal()" class="p-2 rounded-lg text-zinc-400 hover:text-gold-400 hover:bg-dark-800 transition" title="Painel Admin">
+                    <i class="fa-solid fa-user-shield text-lg"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 py-6 w-full flex-grow">
+        
+        <!-- CLIENT BOOKING SECTION -->
+        <div id="booking-section" class="space-y-8">
+            
+            <!-- Hero Banner -->
+            <div class="relative rounded-2xl overflow-hidden bg-gradient-to-r from-dark-800 to-dark-900 border border-dark-700/50 p-6 md:p-8 shadow-2xl">
+                <div class="absolute right-0 top-0 bottom-0 w-1/3 opacity-10 bg-[radial-gradient(#D4AF37_1px,transparent_1px)] [background-size:16px_16px]"></div>
+                <div class="relative z-10 max-w-xl">
+                    <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-gold-500/10 text-gold-400 border border-gold-500/20 mb-3">
+                        <i class="fa-solid fa-sparkles mr-1"></i> Agendamento Online Rápido
+                    </span>
+                    <h2 class="text-2xl md:text-3xl font-serif font-bold text-white mb-2">Garanta seu horário na barbearia</h2>
+                    <p class="text-zinc-400 text-sm md:text-base">Escolha o serviço, a melhor data e confirme diretamente pelo WhatsApp em menos de 1 minuto.</p>
+                </div>
+            </div>
+
+            <!-- Stepper Container -->
+            <div class="space-y-6">
+
+                <!-- STEP 1: SELECT SERVICE -->
+                <div class="bg-dark-800/60 border border-dark-700/60 rounded-2xl p-5 md:p-6 backdrop-blur-sm">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="w-8 h-8 rounded-full bg-gold-500/20 text-gold-400 font-bold flex items-center justify-center text-sm border border-gold-500/30">1</span>
+                        <h3 class="text-lg font-semibold text-white">Escolha os Serviços</h3>
+                    </div>
+
+                    <div id="services-list" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <!-- Rendered via JS -->
+                    </div>
+                </div>
+
+                <!-- STEP 2: DATE & TIME -->
+                <div class="bg-dark-800/60 border border-dark-700/60 rounded-2xl p-5 md:p-6 backdrop-blur-sm">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="w-8 h-8 rounded-full bg-gold-500/20 text-gold-400 font-bold flex items-center justify-center text-sm border border-gold-500/30">2</span>
+                        <h3 class="text-lg font-semibold text-white">Data e Horário</h3>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-medium text-zinc-400 mb-2">Escolha o dia:</label>
+                            <input type="date" id="booking-date" class="w-full bg-dark-900 border border-dark-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-gold-500 transition" onchange="generateTimeSlots()">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-zinc-400 mb-2">Horários disponíveis:</label>
+                            <div id="time-slots" class="grid grid-cols-3 sm:grid-cols-4 gap-2 max-h-48 overflow-y-auto pr-1">
+                                <div class="col-span-full text-zinc-500 text-xs text-center py-4">Selecione uma data para carregar os horários.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 3: CUSTOMER DETAILS -->
+                <div class="bg-dark-800/60 border border-dark-700/60 rounded-2xl p-5 md:p-6 backdrop-blur-sm">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="w-8 h-8 rounded-full bg-gold-500/20 text-gold-400 font-bold flex items-center justify-center text-sm border border-gold-500/30">3</span>
+                        <h3 class="text-lg font-semibold text-white">Seus Dados</h3>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-medium text-zinc-400 mb-1">Nome Completo *</label>
+                            <input type="text" id="client-name" placeholder="Ex: Lucas Silva" class="w-full bg-dark-900 border border-dark-700 rounded-xl px-4 py-2.5 text-white placeholder-zinc-600 focus:outline-none focus:border-gold-500 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-zinc-400 mb-1">WhatsApp com DDD *</label>
+                            <input type="tel" id="client-phone" placeholder="(11) 99999-9999" class="w-full bg-dark-900 border border-dark-700 rounded-xl px-4 py-2.5 text-white placeholder-zinc-600 focus:outline-none focus:border-gold-500 text-sm">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-medium text-zinc-400 mb-1">Observações (Opcional)</label>
+                            <input type="text" id="client-notes" placeholder="Ex: Prefiro atendimento silencioso, degradê navalhado..." class="w-full bg-dark-900 border border-dark-700 rounded-xl px-4 py-2.5 text-white placeholder-zinc-600 focus:outline-none focus:border-gold-500 text-sm">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUMMARY & ACTION -->
+                <div class="bg-dark-800 border border-gold-500/30 rounded-2xl p-6 shadow-xl relative overflow-hidden">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div>
+                            <span class="text-xs text-zinc-400 uppercase tracking-wider">Resumo da Reserva</span>
+                            <div id="booking-summary-text" class="text-sm font-medium text-zinc-200 mt-1">
+                                Selecione os serviços e horários acima para continuar.
+                            </div>
+                            <div class="text-xl font-bold text-gold-400 mt-2" id="total-price">
+                                Total: R$ 0,00
+                            </div>
+                        </div>
+
+                        <button onclick="confirmBooking()" class="w-full md:w-auto px-8 py-4 bg-gradient-to-r from-gold-500 to-gold-600 text-dark-900 font-bold rounded-xl hover:brightness-110 active:scale-[0.99] transition shadow-lg shadow-gold-500/20 flex items-center justify-center gap-2">
+                            <i class="fa-brands fa-whatsapp text-xl"></i>
+                            <span>Confirmar via WhatsApp</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="admin-section" class="hidden space-y-6">
+            <div class="flex items-center justify-between bg-dark-800/80 p-4 rounded-xl border border-dark-700">
+                <div>
+                    <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-user-gear text-gold-500"></i> Painel Administrativo
+                    </h2>
+                    <p class="text-xs text-zinc-400">Gerencie seus agendamentos e configurações</p>
+                </div>
+                <button onclick="switchTab('booking')" class="text-xs text-zinc-400 hover:text-white bg-dark-700 px-3 py-1.5 rounded-lg transition">
+                    <i class="fa-solid fa-arrow-left mr-1"></i> Voltar ao site
+                </button>
+            </div>
+
+            <!-- Admin Nav Tabs -->
+            <div class="flex border-b border-dark-700 gap-4 text-sm font-medium">
+                <button onclick="switchAdminTab('appointments')" id="tab-btn-appointments" class="py-2 border-b-2 border-gold-500 text-gold-400">Agendamentos</button>
+                <button onclick="switchAdminTab('services')" id="tab-btn-services" class="py-2 border-b-2 border-transparent text-zinc-400 hover:text-white">Serviços & Preços</button>
+                <button onclick="switchAdminTab('settings')" id="tab-btn-settings" class="py-2 border-b-2 border-transparent text-zinc-400 hover:text-white">Configurações</button>
+            </div>
+
+            <!-- APPOINTMENTS TAB -->
+            <div id="admin-tab-appointments" class="space-y-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-sm font-semibold text-zinc-300">Lista de Agendamentos Cadastrados</h3>
+                    <button onclick="clearAllAppointments()" class="text-xs text-red-400 hover:text-red-300 bg-red-500/10 border border-red-500/20 px-2.5 py-1 rounded">Limpar Todos</button>
+                </div>
+                
+                <div id="admin-appointments-list" class="space-y-3">
+                    <!-- Rendered JS -->
+                </div>
+            </div>
+
+            <!-- SERVICES TAB -->
+            <div id="admin-tab-services" class="hidden space-y-4">
+                <div class="bg-dark-800 p-4 rounded-xl border border-dark-700 space-y-3">
+                    <h4 class="text-sm font-semibold text-gold-400">Adicionar Novo Serviço</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <input type="text" id="new-service-name" placeholder="Nome do Serviço" class="bg-dark-900 border border-dark-700 rounded-lg px-3 py-2 text-sm text-white">
+                        <input type="number" id="new-service-price" placeholder="Preço (R$)" class="bg-dark-900 border border-dark-700 rounded-lg px-3 py-2 text-sm text-white">
+                    </div>
+                    <button onclick="addNewService()" class="px-4 py-2 bg-gold-500 text-dark-900 font-semibold rounded-lg text-sm hover:bg-gold-400">Adicionar Serviço</button>
+                </div>
+
+                <div id="admin-services-edit-list" class="space-y-2">
+                    <!-- Rendered JS -->
+                </div>
+            </div>
+
+            <!-- SETTINGS TAB -->
+            <div id="admin-tab-settings" class="hidden space-y-4">
+                <div class="bg-dark-800 p-5 rounded-xl border border-dark-700 space-y-4">
+                    <h4 class="text-sm font-semibold text-gold-400">Configurações da Barbearia</h4>
+                    
+                    <div>
+                        <label class="block text-xs text-zinc-400 mb-1">WhatsApp Principal (apenas números com DDD)</label>
+                        <input type="text" id="setting-whatsapp" placeholder="5511999999999" class="w-full bg-dark-900 border border-dark-700 rounded-lg px-3 py-2 text-sm text-white">
+                        <p class="text-[11px] text-zinc-500 mt-1">Este número receberá as mensagens diretas de confirmação dos clientes.</p>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs text-zinc-400 mb-1">Horário de Abertura</label>
+                            <input type="time" id="setting-open" value="09:00" class="w-full bg-dark-900 border border-dark-700 rounded-lg px-3 py-2 text-sm text-white">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-zinc-400 mb-1">Horário de Fechamento</label>
+                            <input type="time" id="setting-close" value="19:00" class="w-full bg-dark-900 border border-dark-700 rounded-lg px-3 py-2 text-sm text-white">
+                        </div>
+                    </div>
+
+                    <button onclick="saveSettings()" class="px-5 py-2.5 bg-gold-500 text-dark-900 font-bold rounded-lg text-sm hover:bg-gold-400">Salvar Alterações</button>
+                </div>
+
+                <!-- HOSTING TUTORIAL GUIDE -->
+                <div class="bg-dark-800/60 p-5 rounded-xl border border-gold-500/20 space-y-3">
+                    <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-cloud-arrow-up text-gold-500"></i> Como hospedar este site de graça:
+                    </h4>
+                    <ol class="text-xs text-zinc-300 space-y-2 list-decimal list-inside leading-relaxed">
+                        <li>Crie uma conta gratuita em <strong>GitHub.com</strong>, <strong>Netlify.com</strong> ou <strong>Vercel.com</strong>.</li>
+                        <li><strong>No GitHub Pages:</strong> Crie um repositório, envie este arquivo nomeado como <code>index.html</code> e ative o GitHub Pages nas configurações do projeto.</li>
+                        <li><strong>No Netlify / Vercel:</strong> Basta arrastar e soltar a pasta com este arquivo <code>index.html</code> diretamente na tela de deploy.</li>
+                        <li>Pronto! Seu site terá um link público seguro (HTTPS) 100% gratuito.</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-dark-900 border-t border-dark-800 py-6 text-center text-xs text-zinc-500">
+        <div class="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-3">
+            <p>© BarberShop Premium - Todos os direitos reservados.</p>
+            <div class="flex items-center gap-4">
+                <span class="hover:text-gold-400 cursor-pointer" onclick="openAdminModal()">Acesso Restrito</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Admin Login Modal -->
+    <div id="admin-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-dark-800 border border-dark-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
+            <button onclick="closeAdminModal()" class="absolute top-4 right-4 text-zinc-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 bg-gold-500/10 border border-gold-500/20 rounded-full flex items-center justify-center mx-auto mb-2 text-gold-400">
+                    <i class="fa-solid fa-lock text-xl"></i>
+                </div>
+                <h3 class="text-lg font-bold text-white">Acesso do Barbeiro</h3>
+                <p class="text-xs text-zinc-400">Digite a senha administrativa (Padrão: 1234)</p>
+            </div>
+
+            <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+                <div>
+                    <input type="password" id="admin-pass" placeholder="Digite a senha" class="w-full bg-dark-900 border border-dark-700 rounded-xl px-4 py-3 text-center text-white tracking-widest text-lg focus:outline-none focus:border-gold-500">
+                </div>
+                <button type="submit" class="w-full py-3 bg-gold-500 text-dark-900 font-bold rounded-xl hover:bg-gold-400 transition">Acessar Painel</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-dark-800 border border-gold-500 text-white px-4 py-3 rounded-xl shadow-2xl text-xs font-medium translate-y-20 opacity-0 transition-all duration-300 z-50 flex items-center gap-2">
+        <i class="fa-solid fa-circle-check text-gold-400 text-base" id="toast-icon"></i>
+        <span id="toast-message">Mensagem enviada</span>
+    </div>
+
+    <script>
+        // INITIAL DEFAULT DATA (WITHOUT DURATION AND WITHOUT BARBERS)
+        const DEFAULT_SERVICES = [
+            { id: '1', name: 'Corte de Cabelo', price: 45, icon: 'fa-scissors' },
+            { id: '2', name: 'Barba Completa', price: 35, icon: 'fa-user' },
+            { id: '3', name: 'Combo Cabelo + Barba', price: 70, icon: 'fa-crown' },
+            { id: '4', name: 'Sobrancelha', price: 20, icon: 'fa-eye' },
+            { id: '5', name: 'Pigmentação', price: 40, icon: 'fa-spray-can' }
+        ];
+
+        // STATE APP MANAGEMENT
+        let state = {
+            services: JSON.parse(localStorage.getItem('bs_services')) || DEFAULT_SERVICES,
+            appointments: JSON.parse(localStorage.getItem('bs_appointments')) || [],
+            settings: JSON.parse(localStorage.getItem('bs_settings')) || {
+                whatsapp: '5511999999999',
+                openTime: '09:00',
+                closeTime: '19:00',
+                adminPass: '1234'
+            },
+            selectedServices: [],
+            selectedDate: '',
+            selectedTime: ''
+        };
+
+        // DOM LOAD INITIALIZATION
+        document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date().toISOString().split('T')[0];
+            const dateInput = document.getElementById('booking-date');
+            dateInput.min = today;
+            dateInput.value = today;
+            state.selectedDate = today;
+
+            renderServices();
+            generateTimeSlots();
+            loadSettingsToForm();
+        });
+
+        // TOAST NOTIFICATION HELPERS
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            const toastIcon = document.getElementById('toast-icon');
+
+            toastMsg.innerText = message;
+            if (isError) {
+                toast.classList.replace('border-gold-500', 'border-red-500');
+                toastIcon.className = 'fa-solid fa-circle-xmark text-red-400 text-base';
+            } else {
+                toast.classList.replace('border-red-500', 'border-gold-500');
+                toastIcon.className = 'fa-solid fa-circle-check text-gold-400 text-base';
+            }
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3500);
+        }
+
+        // RENDER SERVICES (WITHOUT DURATION DISPLAY)
+        function renderServices() {
+            const container = document.getElementById('services-list');
+            container.innerHTML = '';
+
+            state.services.forEach(service => {
+                const isSelected = state.selectedServices.includes(service.id);
+                const el = document.createElement('div');
+                el.onclick = () => toggleService(service.id);
+                el.className = `cursor-pointer p-4 rounded-xl border transition-all flex items-center justify-between ${
+                    isSelected 
+                        ? 'bg-gold-500/10 border-gold-500 text-white shadow-lg shadow-gold-500/5' 
+                        : 'bg-dark-900/60 border-dark-700/60 text-zinc-300 hover:border-zinc-500'
+                }`;
+
+                el.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg ${isSelected ? 'bg-gold-500 text-dark-900' : 'bg-dark-800 text-gold-400'} flex items-center justify-center transition">
+                            <i class="fa-solid ${service.icon || 'fa-scissors'} text-base"></i>
+                        </div>
+                        <div>
+                            <p class="font-medium text-sm text-white">${service.name}</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="font-bold text-gold-400 text-sm">R$ ${parseFloat(service.price).toFixed(2)}</span>
+                    </div>
+                `;
+                container.appendChild(el);
+            });
+
+            updateSummary();
+        }
+
+        function toggleService(id) {
+            if (state.selectedServices.includes(id)) {
+                state.selectedServices = state.selectedServices.filter(sId => sId !== id);
+            } else {
+                state.selectedServices.push(id);
+            }
+            renderServices();
+        }
+
+        // TIME SLOTS GENERATOR
+        function generateTimeSlots() {
+            const container = document.getElementById('time-slots');
+            const dateInput = document.getElementById('booking-date').value;
+            state.selectedDate = dateInput;
+            container.innerHTML = '';
+
+            if (!dateInput) return;
+
+            const openHour = parseInt(state.settings.openTime.split(':')[0]);
+            const closeHour = parseInt(state.settings.closeTime.split(':')[0]);
+
+            // Existing bookings for selected date
+            const bookedTimes = state.appointments
+                .filter(a => a.date === dateInput && a.status !== 'cancelled')
+                .map(a => a.time);
+
+            for (let hour = openHour; hour < closeHour; hour++) {
+                ['00', '30'].forEach(minute => {
+                    const timeStr = `${String(hour).padStart(2, '0')}:${minute}`;
+                    const isBooked = bookedTimes.includes(timeStr);
+                    const isSelected = state.selectedTime === timeStr;
+
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.disabled = isBooked;
+                    btn.onclick = () => {
+                        state.selectedTime = timeStr;
+                        generateTimeSlots();
+                        updateSummary();
+                    };
+
+                    btn.className = `py-2 text-xs rounded-lg font-medium transition ${
+                        isBooked 
+                            ? 'bg-dark-900/40 text-zinc-600 line-through cursor-not-allowed border border-transparent' 
+                            : isSelected 
+                                ? 'bg-gold-500 text-dark-900 font-bold shadow-md shadow-gold-500/20' 
+                                : 'bg-dark-900 text-zinc-300 border border-dark-700 hover:border-gold-500'
+                    }`;
+                    btn.innerText = timeStr;
+                    container.appendChild(btn);
+                });
+            }
+        }
+
+        // UPDATE SUMMARY TEXT (WITHOUT TIME DURATION)
+        function updateSummary() {
+            const summaryText = document.getElementById('booking-summary-text');
+            const totalPriceEl = document.getElementById('total-price');
+
+            const selectedObjs = state.services.filter(s => state.selectedServices.includes(s.id));
+            const totalCost = selectedObjs.reduce((acc, curr) => acc + parseFloat(curr.price), 0);
+
+            if (selectedObjs.length === 0) {
+                summaryText.innerText = 'Selecione pelo menos um serviço acima.';
+            } else {
+                const serviceNames = selectedObjs.map(s => s.name).join(', ');
+                const dateFormatted = state.selectedDate ? state.selectedDate.split('-').reverse().join('/') : '--/--/----';
+                const timeText = state.selectedTime || 'Selecione o horário';
+
+                summaryText.innerHTML = `<strong>Serviços:</strong> ${serviceNames}<br><strong>Data:</strong> ${dateFormatted} às ${timeText}`;
+            }
+
+            totalPriceEl.innerHTML = `Total: R$ ${totalCost.toFixed(2)}`;
+        }
+
+        // CONFIRM BOOKING & REDIRECT TO WHATSAPP
+        function confirmBooking() {
+            const name = document.getElementById('client-name').value.trim();
+            const phone = document.getElementById('client-phone').value.trim();
+            const notes = document.getElementById('client-notes').value.trim();
+
+            if (state.selectedServices.length === 0) {
+                showToast('Por favor, selecione ao menos um serviço.', true);
+                return;
+            }
+            if (!state.selectedTime) {
+                showToast('Por favor, selecione o horário do agendamento.', true);
+                return;
+            }
+            if (!name || !phone) {
+                showToast('Preencha seu nome e WhatsApp de contato.', true);
+                return;
+            }
+
+            const selectedObjs = state.services.filter(s => state.selectedServices.includes(s.id));
+            const totalCost = selectedObjs.reduce((acc, curr) => acc + parseFloat(curr.price), 0);
+            const serviceNames = selectedObjs.map(s => s.name).join(', ');
+            const dateFormatted = state.selectedDate.split('-').reverse().join('/');
+
+            // Save locally
+            const newAppointment = {
+                id: Date.now().toString(),
+                clientName: name,
+                clientPhone: phone,
+                services: serviceNames,
+                price: totalCost,
+                date: state.selectedDate,
+                time: state.selectedTime,
+                notes: notes,
+                status: 'pending',
+                createdAt: new Date().toISOString()
+            };
+
+            state.appointments.push(newAppointment);
+            localStorage.setItem('bs_appointments', JSON.stringify(state.appointments));
+
+            // Format WhatsApp Message
+            let msg = `*NOVO AGENDAMENTO - BARBERSHOP*\n\n`;
+            msg += `👤 *Cliente:* ${name}\n`;
+            msg += `📞 *Telefone:* ${phone}\n`;
+            msg += `✂️ *Serviço(s):* ${serviceNames}\n`;
+            msg += `📅 *Data:* ${dateFormatted}\n`;
+            msg += `⏰ *Horário:* ${state.selectedTime}\n`;
+            msg += `💰 *Valor Total:* R$ ${totalCost.toFixed(2)}\n`;
+            if (notes) msg += `📝 *Obs:* ${notes}\n`;
+            msg += `\n_Gostaria de confirmar esta reserva!_`;
+
+            const encodedMsg = encodeURIComponent(msg);
+            const waNumber = state.settings.whatsapp.replace(/\D/g, '');
+            const waUrl = `https://api.whatsapp.com/send?phone=${waNumber}&text=${encodedMsg}`;
+
+            showToast('Agendamento realizado! Redirecionando para o WhatsApp...');
+            
+            setTimeout(() => {
+                window.open(waUrl, '_blank');
+                // Reset form
+                state.selectedServices = [];
+                state.selectedTime = '';
+                document.getElementById('client-name').value = '';
+                document.getElementById('client-phone').value = '';
+                document.getElementById('client-notes').value = '';
+                renderServices();
+                generateTimeSlots();
+            }, 1200);
+        }
+
+        // NAVIGATION TABS
+        function switchTab(tab) {
+            const bookingSec = document.getElementById('booking-section');
+            const adminSec = document.getElementById('admin-section');
+
+            if (tab === 'booking') {
+                bookingSec.classList.remove('hidden');
+                adminSec.classList.add('hidden');
+            } else if (tab === 'admin') {
+                bookingSec.classList.add('hidden');
+                adminSec.classList.remove('hidden');
+                renderAdminAppointments();
+            }
+        }
+
+        // ADMIN MODAL LOGIC
+        function openAdminModal() {
+            document.getElementById('admin-modal').classList.remove('hidden');
+        }
+
+        function closeAdminModal() {
+            document.getElementById('admin-modal').classList.add('hidden');
+        }
+
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const pass = document.getElementById('admin-pass').value;
+            if (pass === state.settings.adminPass) {
+                closeAdminModal();
+                document.getElementById('admin-pass').value = '';
+                switchTab('admin');
+                showToast('Acesso administrativo concedido!');
+            } else {
+                showToast('Senha incorreta!', true);
+            }
+        }
+
+        // ADMIN TABS SWITCH
+        function switchAdminTab(subTab) {
+            const tabs = ['appointments', 'services', 'settings'];
+            tabs.forEach(t => {
+                document.getElementById(`admin-tab-${t}`).classList.add('hidden');
+                document.getElementById(`tab-btn-${t}`).className = 'py-2 border-b-2 border-transparent text-zinc-400 hover:text-white';
+            });
+
+            document.getElementById(`admin-tab-${subTab}`).classList.remove('hidden');
+            document.getElementById(`tab-btn-${subTab}`).className = 'py-2 border-b-2 border-gold-500 text-gold-400 font-semibold';
+
+            if (subTab === 'appointments') renderAdminAppointments();
+            if (subTab === 'services') renderAdminServicesEdit();
+        }
+
+        // RENDER ADMIN APPOINTMENTS
+        function renderAdminAppointments() {
+            const container = document.getElementById('admin-appointments-list');
+            container.innerHTML = '';
+
+            if (state.appointments.length === 0) {
+                container.innerHTML = `<div class="bg-dark-800 p-6 rounded-xl text-center text-zinc-500 text-sm">Nenhum agendamento realizado até o momento.</div>`;
+                return;
+            }
+
+            const sorted = [...state.appointments].reverse();
+
+            sorted.forEach(app => {
+                const dateFormatted = app.date ? app.date.split('-').reverse().join('/') : '--';
+                const isCancelled = app.status === 'cancelled';
+                const el = document.createElement('div');
+                el.className = `bg-dark-800 border ${isCancelled ? 'border-red-900/30 opacity-60' : 'border-dark-700'} p-4 rounded-xl flex flex-col md:flex-row justify-between md:items-center gap-3`;
+
+                el.innerHTML = `
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <span class="font-bold text-white">${app.clientName}</span>
+                            <span class="text-xs px-2 py-0.5 rounded bg-dark-700 text-gold-400 border border-gold-500/20">${app.time} - ${dateFormatted}</span>
+                            ${isCancelled ? '<span class="text-xs px-2 py-0.5 rounded bg-red-500/20 text-red-400">Cancelado</span>' : ''}
+                        </div>
+                        <p class="text-xs text-zinc-400"><i class="fa-solid fa-scissors mr-1 text-gold-500"></i> ${app.services}</p>
+                        <p class="text-xs text-zinc-400"><i class="fa-brands fa-whatsapp mr-1 text-emerald-400"></i> ${app.clientPhone} ${app.notes ? `| Obs: ${app.notes}` : ''}</p>
+                    </div>
+
+                    <div class="flex items-center gap-2 self-end md:self-center">
+                        <span class="font-bold text-gold-400 text-sm mr-2">R$ ${parseFloat(app.price).toFixed(2)}</span>
+                        ${!isCancelled ? `<button onclick="cancelAppointment('${app.id}')" class="text-xs text-red-400 hover:bg-red-500/10 px-2.5 py-1.5 rounded border border-red-500/20">Cancelar</button>` : ''}
+                        <button onclick="deleteAppointment('${app.id}')" class="text-xs text-zinc-500 hover:text-white p-1.5"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+                container.appendChild(el);
+            });
+        }
+
+        function cancelAppointment(id) {
+            state.appointments = state.appointments.map(a => a.id === id ? { ...a, status: 'cancelled' } : a);
+            localStorage.setItem('bs_appointments', JSON.stringify(state.appointments));
+            renderAdminAppointments();
+            generateTimeSlots();
+            showToast('Agendamento cancelado.');
+        }
+
+        function deleteAppointment(id) {
+            state.appointments = state.appointments.filter(a => a.id !== id);
+            localStorage.setItem('bs_appointments', JSON.stringify(state.appointments));
+            renderAdminAppointments();
+            generateTimeSlots();
+            showToast('Agendamento removido.');
+        }
+
+        function clearAllAppointments() {
+            if (confirm('Deseja realmente apagar todo o histórico de agendamentos?')) {
+                state.appointments = [];
+                localStorage.removeItem('bs_appointments');
+                renderAdminAppointments();
+                generateTimeSlots();
+                showToast('Histórico limpo.');
+            }
+        }
+
+        // SERVICES ADMIN EDIT (WITHOUT DURATION INPUT)
+        function renderAdminServicesEdit() {
+            const container = document.getElementById('admin-services-edit-list');
+            container.innerHTML = '';
+
+            state.services.forEach(s => {
+                const el = document.createElement('div');
+                el.className = 'bg-dark-800 border border-dark-700 p-3 rounded-lg flex justify-between items-center text-sm';
+                el.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid ${s.icon || 'fa-scissors'} text-gold-400"></i>
+                        <span class="text-white font-medium">${s.name}</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-gold-400 font-bold">R$ ${parseFloat(s.price).toFixed(2)}</span>
+                        <button onclick="removeService('${s.id}')" class="text-red-400 hover:text-red-300 text-xs p-1"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+                container.appendChild(el);
+            });
+        }
+
+        function addNewService() {
+            const name = document.getElementById('new-service-name').value.trim();
+            const price = parseFloat(document.getElementById('new-service-price').value);
+
+            if (!name || isNaN(price)) {
+                showToast('Preencha o nome e preço do serviço.', true);
+                return;
+            }
+
+            const newService = {
+                id: Date.now().toString(),
+                name,
+                price,
+                icon: 'fa-scissors'
+            };
+
+            state.services.push(newService);
+            localStorage.setItem('bs_services', JSON.stringify(state.services));
+            
+            document.getElementById('new-service-name').value = '';
+            document.getElementById('new-service-price').value = '';
+
+            renderAdminServicesEdit();
+            renderServices();
+            showToast('Serviço adicionado com sucesso!');
+        }
+
+        function removeService(id) {
+            state.services = state.services.filter(s => s.id !== id);
+            localStorage.setItem('bs_services', JSON.stringify(state.services));
+            renderAdminServicesEdit();
+            renderServices();
+            showToast('Serviço removido.');
+        }
+
+        // SETTINGS ADMIN LOGIC
+        function loadSettingsToForm() {
+            document.getElementById('setting-whatsapp').value = state.settings.whatsapp;
+            document.getElementById('setting-open').value = state.settings.openTime;
+            document.getElementById('setting-close').value = state.settings.closeTime;
+        }
+
+        function saveSettings() {
+            const wa = document.getElementById('setting-whatsapp').value.trim();
+            const open = document.getElementById('setting-open').value;
+            const close = document.getElementById('setting-close').value;
+
+            if (!wa) {
+                showToast('Digite o WhatsApp da barbearia.', true);
+                return;
+            }
+
+            state.settings.whatsapp = wa;
+            state.settings.openTime = open;
+            state.settings.closeTime = close;
+
+            localStorage.setItem('bs_settings', JSON.stringify(state.settings));
+            generateTimeSlots();
+            showToast('Configurações salvas com sucesso!');
+        }
+    </script>
+</body>
+</html>
